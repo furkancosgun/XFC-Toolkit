@@ -140,15 +140,12 @@ CLASS lcl_itab_to_html IMPLEMENTATION.
       lo_elemdescr->get_ddic_field( RECEIVING  p_flddescr = ls_ddic_field
                                     EXCEPTIONS OTHERS     = 1 ).
       IF sy-subrc <> 0.
-        INSERT VALUE #( name = <fs_component>-name
-                        text = <fs_component>-name
-                        elem = lo_elemdescr ) INTO TABLE rt_result.
-      ELSE.
-        INSERT VALUE #( name = <fs_component>-name
-                        text = ls_ddic_field-fieldtext
-                        elem = lo_elemdescr ) INTO TABLE rt_result.
-
+        ls_ddic_field-fieldtext = <fs_component>-name.
       ENDIF.
+      INSERT VALUE #( name = <fs_component>-name
+                      text = ls_ddic_field-fieldtext
+                      elem = lo_elemdescr ) INTO TABLE rt_result.
+
     ENDLOOP.
   ENDMETHOD.
 

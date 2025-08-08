@@ -18,12 +18,9 @@ CLASS zcl_xfc_lru_cache_toolkit DEFINITION
       IMPORTING iv_key   TYPE string
                 iv_value TYPE any.
 
-    METHODS set_capacity
-      IMPORTING iv_capacity TYPE i DEFAULT 100.
-
   PRIVATE SECTION.
     METHODS constructor
-      IMPORTING iv_capacity TYPE i DEFAULT 100.
+      IMPORTING iv_capacity TYPE i.
 
     METHODS delete_node
       IMPORTING io_node TYPE REF TO zcl_xfc_lru_node.
@@ -46,9 +43,8 @@ ENDCLASS.
 CLASS zcl_xfc_lru_cache_toolkit IMPLEMENTATION.
   METHOD get_instance.
     IF instance IS NOT BOUND.
-      instance = NEW zcl_xfc_lru_cache_toolkit( ).
+      instance = NEW zcl_xfc_lru_cache_toolkit( iv_capacity ).
     ENDIF.
-    instance->set_capacity( iv_capacity ).
     ro_instance = instance.
   ENDMETHOD.
 
@@ -88,10 +84,6 @@ CLASS zcl_xfc_lru_cache_toolkit IMPLEMENTATION.
     history->prepend( new_node ).
     INSERT VALUE #( k = iv_key
                     v = new_node ) INTO TABLE me->cache_map.
-  ENDMETHOD.
-
-  METHOD set_capacity.
-    capacity = iv_capacity.
   ENDMETHOD.
 
   METHOD delete_node.
