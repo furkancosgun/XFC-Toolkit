@@ -3,65 +3,44 @@ CLASS zcl_xfc_sys_toolkit DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    METHODS constructor
-      IMPORTING io_cache TYPE REF TO zcl_xfc_lru_cache_toolkit DEFAULT zcl_xfc_lru_cache_toolkit=>default.
-
-    METHODS is_production
+    CLASS-METHODS is_production
       IMPORTING iv_client        TYPE sy-mandt DEFAULT sy-mandt
       RETURNING VALUE(rv_result) TYPE abap_bool
       RAISING   zcx_xfc_toolkit_error.
 
-    METHODS is_test
+    CLASS-METHODS is_test
       IMPORTING iv_client        TYPE sy-mandt DEFAULT sy-mandt
       RETURNING VALUE(rv_result) TYPE abap_bool
       RAISING   zcx_xfc_toolkit_error.
 
-    METHODS is_customizing
+    CLASS-METHODS is_customizing
       IMPORTING iv_client        TYPE sy-mandt DEFAULT sy-mandt
       RETURNING VALUE(rv_result) TYPE abap_bool
       RAISING   zcx_xfc_toolkit_error.
 
-    METHODS is_demo
+    CLASS-METHODS is_demo
       IMPORTING iv_client        TYPE sy-mandt DEFAULT sy-mandt
       RETURNING VALUE(rv_result) TYPE abap_bool
       RAISING   zcx_xfc_toolkit_error.
 
-    METHODS is_education
+    CLASS-METHODS is_education
       IMPORTING iv_client        TYPE sy-mandt DEFAULT sy-mandt
       RETURNING VALUE(rv_result) TYPE abap_bool
       RAISING   zcx_xfc_toolkit_error.
 
   PRIVATE SECTION.
-    METHODS get_client
+    CLASS-METHODS get_client
       IMPORTING iv_client        TYPE sy-mandt DEFAULT sy-mandt
       RETURNING VALUE(rs_result) TYPE t000
       RAISING   zcx_xfc_toolkit_error.
-
-    DATA cache TYPE REF TO zcl_xfc_lru_cache_toolkit.
-
 ENDCLASS.
 
 
 CLASS zcl_xfc_sys_toolkit IMPLEMENTATION.
-  METHOD constructor.
-    cache = io_cache.
-  ENDMETHOD.
-
   METHOD get_client.
-    DATA lv_key TYPE zcl_xfc_lru_cache_toolkit=>ty_key.
-
-    lv_key = |T000:{ iv_client }|.
-
-    cache->get( EXPORTING  iv_key   = lv_key
-                IMPORTING  ev_value = rs_result
-                EXCEPTIONS OTHERS   = 1 ).
+    SELECT SINGLE * FROM t000 INTO rs_result WHERE mandt = iv_client.
     IF sy-subrc <> 0.
-      SELECT SINGLE * FROM t000 INTO rs_result WHERE mandt = iv_client.
-      IF sy-subrc <> 0.
-        zcx_xfc_toolkit_error=>raise( |{ iv_client } client not found.| ).
-      ENDIF.
-      cache->put( iv_key   = lv_key
-                  iv_value = rs_result ).
+      zcx_xfc_toolkit_error=>raise( |{ iv_client } client not found.| ).
     ENDIF.
   ENDMETHOD.
 

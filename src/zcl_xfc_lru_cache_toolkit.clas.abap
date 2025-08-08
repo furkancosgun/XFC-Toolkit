@@ -5,8 +5,6 @@ CLASS zcl_xfc_lru_cache_toolkit DEFINITION
   PUBLIC SECTION.
     TYPES ty_key TYPE string.
 
-    CLASS-METHODS class_constructor.
-
     CLASS-METHODS get_instance
       IMPORTING iv_capacity        TYPE i DEFAULT 100
       RETURNING VALUE(ro_instance) TYPE REF TO zcl_xfc_lru_cache_toolkit.
@@ -20,7 +18,8 @@ CLASS zcl_xfc_lru_cache_toolkit DEFINITION
       IMPORTING iv_key   TYPE string
                 iv_value TYPE any.
 
-    CLASS-DATA default TYPE REF TO zcl_xfc_lru_cache_toolkit.
+    METHODS set_capacity
+      IMPORTING iv_capacity TYPE i DEFAULT 100.
 
   PRIVATE SECTION.
     METHODS constructor
@@ -36,6 +35,8 @@ CLASS zcl_xfc_lru_cache_toolkit DEFINITION
              v TYPE REF TO zcl_xfc_lru_node,
            END OF ty_map.
 
+    CLASS-DATA instance TYPE REF TO zcl_xfc_lru_cache_toolkit.
+
     DATA capacity  TYPE i.
     DATA cache_map TYPE HASHED TABLE OF ty_map WITH UNIQUE KEY k.
     DATA history   TYPE REF TO zcl_xfc_lru_linked_list.
@@ -43,12 +44,12 @@ ENDCLASS.
 
 
 CLASS zcl_xfc_lru_cache_toolkit IMPLEMENTATION.
-  METHOD class_constructor.
-    default = NEW zcl_xfc_lru_cache_toolkit( ).
-  ENDMETHOD.
-
   METHOD get_instance.
-    ro_instance = NEW zcl_xfc_lru_cache_toolkit( iv_capacity ).
+    IF instance IS NOT BOUND.
+      instance = NEW zcl_xfc_lru_cache_toolkit( ).
+    ENDIF.
+    instance->set_capacity( iv_capacity ).
+    ro_instance = instance.
   ENDMETHOD.
 
   METHOD constructor.
@@ -87,6 +88,10 @@ CLASS zcl_xfc_lru_cache_toolkit IMPLEMENTATION.
     history->prepend( new_node ).
     INSERT VALUE #( k = iv_key
                     v = new_node ) INTO TABLE me->cache_map.
+  ENDMETHOD.
+
+  METHOD set_capacity.
+    capacity = iv_capacity.
   ENDMETHOD.
 
   METHOD delete_node.

@@ -3,47 +3,70 @@ CLASS zcl_xfc_user_toolkit DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    METHODS constructor
-      IMPORTING io_cache TYPE REF TO zcl_xfc_lru_cache_toolkit DEFAULT zcl_xfc_lru_cache_toolkit=>default.
-
-    METHODS get_full_name
-      IMPORTING iv_uname         TYPE clike
+    CLASS-METHODS get_full_name
+      IMPORTING iv_uname         TYPE sy-uname DEFAULT sy-uname
       RETURNING VALUE(rv_result) TYPE string.
 
-    METHODS get_email
-      IMPORTING iv_uname         TYPE clike
+    CLASS-METHODS get_email
+      IMPORTING iv_uname         TYPE sy-uname DEFAULT sy-uname
       RETURNING VALUE(rv_result) TYPE string.
 
-    METHODS get_mobile_number
-      IMPORTING iv_uname         TYPE clike
+    CLASS-METHODS get_mobile_number
+      IMPORTING iv_uname         TYPE sy-uname DEFAULT sy-uname
       RETURNING VALUE(rv_result) TYPE string.
 
-    METHODS get_language
-      IMPORTING iv_uname         TYPE clike
+    CLASS-METHODS get_language
+      IMPORTING iv_uname         TYPE sy-uname DEFAULT sy-uname
       RETURNING VALUE(rv_result) TYPE string.
 
-    METHODS can_debug
-      IMPORTING iv_uname         TYPE clike
+    CLASS-METHODS get_computer_name
+      RETURNING VALUE(rv_result) TYPE string.
+
+    CLASS-METHODS get_windows_directory
+      RETURNING VALUE(rv_result) TYPE string.
+
+    CLASS-METHODS get_system_directory
+      RETURNING VALUE(rv_result) TYPE string.
+
+    CLASS-METHODS get_temp_directory
+      RETURNING VALUE(rv_result) TYPE string.
+
+    CLASS-METHODS get_domain_username
+      RETURNING VALUE(rv_result) TYPE string.
+
+    CLASS-METHODS get_windows_platform
+      RETURNING VALUE(rv_result) TYPE string.
+
+    CLASS-METHODS get_program_path
+      RETURNING VALUE(rv_result) TYPE string.
+
+    CLASS-METHODS get_currenty_directory
+      RETURNING VALUE(rv_result) TYPE string.
+
+    CLASS-METHODS get_desktop_directory
+      RETURNING VALUE(rv_result) TYPE string.
+
+    CLASS-METHODS can_debug
+      IMPORTING iv_uname         TYPE sy-uname DEFAULT sy-uname
       RETURNING VALUE(rv_result) TYPE abap_bool.
 
-    METHODS can_develop
-      IMPORTING iv_uname         TYPE clike
+    CLASS-METHODS can_develop
+      IMPORTING iv_uname         TYPE sy-uname DEFAULT sy-uname
       RETURNING VALUE(rv_result) TYPE abap_bool.
-
-    METHODS get_address
-      IMPORTING iv_uname         TYPE clike
-      RETURNING VALUE(rs_result) TYPE bapiaddr3.
 
   PRIVATE SECTION.
-    DATA cache TYPE REF TO zcl_xfc_lru_cache_toolkit.
+    CLASS-METHODS gui_get_desktop_info
+      IMPORTING iv_type          TYPE i
+      RETURNING VALUE(rv_result) TYPE char255.
+
+    CLASS-METHODS bapi_user_get_detail
+      IMPORTING iv_uname         TYPE sy-uname DEFAULT sy-uname
+      RETURNING VALUE(rs_result) TYPE bapiaddr3.
+
 ENDCLASS.
 
 
 CLASS zcl_xfc_user_toolkit IMPLEMENTATION.
-  METHOD constructor.
-    cache = io_cache.
-  ENDMETHOD.
-
   METHOD can_debug.
     AUTHORITY-CHECK OBJECT 'S_DEVELOP' FOR USER iv_uname
                     ID 'ACTVT'    FIELD '02'
@@ -65,37 +88,74 @@ CLASS zcl_xfc_user_toolkit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_email.
-    rv_result = get_address( iv_uname )-e_mail.
+    rv_result = bapi_user_get_detail( iv_uname )-e_mail.
   ENDMETHOD.
 
   METHOD get_full_name.
-    rv_result = get_address( iv_uname )-fullname.
+    rv_result = bapi_user_get_detail( iv_uname )-fullname.
   ENDMETHOD.
 
   METHOD get_language.
-    rv_result = get_address( iv_uname )-langu.
+    rv_result = bapi_user_get_detail( iv_uname )-langu_p.
   ENDMETHOD.
 
   METHOD get_mobile_number.
-    rv_result = get_address( iv_uname )-tel1_numbr.
+    rv_result = bapi_user_get_detail( iv_uname )-tel1_numbr.
   ENDMETHOD.
 
-  METHOD get_address.
-    DATA lv_key    TYPE zcl_xfc_lru_cache_toolkit=>ty_key.
+  METHOD get_computer_name.
+    rv_result = gui_get_desktop_info( sfes_info_computer_name ).
+  ENDMETHOD.
+
+  METHOD get_currenty_directory.
+    rv_result = gui_get_desktop_info( sfes_info_current_directory ).
+  ENDMETHOD.
+
+  METHOD get_desktop_directory.
+    rv_result = gui_get_desktop_info( sfes_info_desktop_directory ).
+  ENDMETHOD.
+
+  METHOD get_domain_username.
+    rv_result = gui_get_desktop_info( sfes_info_user_name ).
+  ENDMETHOD.
+
+  METHOD get_windows_platform.
+    rv_result = gui_get_desktop_info( sfes_info_windows_platform ).
+  ENDMETHOD.
+
+  METHOD get_program_path.
+    rv_result = gui_get_desktop_info( sfes_info_program_path ).
+  ENDMETHOD.
+
+  METHOD get_system_directory.
+    rv_result = gui_get_desktop_info( sfes_info_system_directory ).
+  ENDMETHOD.
+
+  METHOD get_temp_directory.
+    rv_result = gui_get_desktop_info( sfes_info_temp_directory ).
+  ENDMETHOD.
+
+  METHOD get_windows_directory.
+    rv_result = gui_get_desktop_info( sfes_info_windows_directory ).
+  ENDMETHOD.
+
+  METHOD bapi_user_get_detail.
     DATA lt_return TYPE STANDARD TABLE OF bapiret2.
 
-    lv_key = |BAPI_USER_GET_DETAIL:{ iv_uname }|.
+    CALL FUNCTION 'BAPI_USER_GET_DETAIL'
+      EXPORTING
+        username = iv_uname
+      IMPORTING
+        address  = rs_result
+      TABLES
+        return   = lt_return.
+  ENDMETHOD.
 
-    cache->get( EXPORTING  iv_key   = lv_key
-                IMPORTING  ev_value = rs_result
-                EXCEPTIONS OTHERS   = 1 ).
-    IF sy-subrc <> 0.
-      CALL FUNCTION 'BAPI_USER_GET_DETAIL'
-        EXPORTING username = iv_uname
-        IMPORTING address  = rs_result
-        TABLES    return   = lt_return.
-      cache->put( iv_key   = lv_key
-                  iv_value = rs_result ).
-    ENDIF.
+  METHOD gui_get_desktop_info.
+    CALL FUNCTION 'GUI_GET_DESKTOP_INFO'
+      EXPORTING
+        type   = iv_type
+      CHANGING
+        return = rv_result.
   ENDMETHOD.
 ENDCLASS.

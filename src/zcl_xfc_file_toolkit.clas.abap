@@ -6,19 +6,19 @@ CLASS zcl_xfc_file_toolkit DEFINITION
     TYPES xline TYPE x LENGTH 255.
     TYPES xtabl TYPE STANDARD TABLE OF xline WITH EMPTY KEY.
 
-    METHODS write
+    CLASS-METHODS write
       IMPORTING iv_file TYPE string
                 iv_data TYPE string.
 
-    METHODS write_x
+    CLASS-METHODS write_x
       IMPORTING iv_file  TYPE string
                 iv_datax TYPE xstring.
 
-    METHODS read
+    CLASS-METHODS read
       IMPORTING iv_file TYPE string
       EXPORTING ev_data TYPE string.
 
-    METHODS read_x
+    CLASS-METHODS read_x
       IMPORTING iv_file  TYPE string
       EXPORTING ev_datax TYPE xstring.
 
@@ -47,18 +47,24 @@ CLASS zcl_xfc_file_toolkit IMPLEMENTATION.
                                           EXCEPTIONS OTHERS     = 1 ).
 
     CALL FUNCTION 'SCMS_BINARY_TO_XSTRING'
-      EXPORTING  input_length = lv_length
-      IMPORTING  buffer       = ev_datax
-      TABLES     binary_tab   = lt_binary
-      EXCEPTIONS OTHERS       = 1.
+      EXPORTING
+        input_length = lv_length
+      IMPORTING
+        buffer       = ev_datax
+      TABLES
+        binary_tab   = lt_binary
+      EXCEPTIONS
+        OTHERS       = 1.
   ENDMETHOD.
 
   METHOD write.
     DATA lx_data TYPE xstring.
 
     CALL FUNCTION 'SCMS_STRING_TO_XSTRING'
-      EXPORTING text   = iv_data
-      IMPORTING buffer = lx_data.
+      EXPORTING
+        text   = iv_data
+      IMPORTING
+        buffer = lx_data.
 
     write_x( iv_file  = iv_file
              iv_datax = lx_data ).
@@ -69,9 +75,12 @@ CLASS zcl_xfc_file_toolkit IMPLEMENTATION.
     DATA lt_strm TYPE xtabl.
 
     CALL FUNCTION 'SCMS_XSTRING_TO_BINARY'
-      EXPORTING buffer        = iv_datax
-      IMPORTING output_length = lv_size
-      TABLES    binary_tab    = lt_strm.
+      EXPORTING
+        buffer        = iv_datax
+      IMPORTING
+        output_length = lv_size
+      TABLES
+        binary_tab    = lt_strm.
 
     cl_gui_frontend_services=>gui_download( EXPORTING  bin_filesize = lv_size
                                                        filetype     = 'BIN'

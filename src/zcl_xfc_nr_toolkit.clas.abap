@@ -3,7 +3,7 @@ CLASS zcl_xfc_nr_toolkit DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    METHODS number_get_next
+    CLASS-METHODS number_get_next
       IMPORTING iv_nrrangenr TYPE nriv-nrrangenr
                 iv_object    TYPE nriv-object
                 iv_subobject TYPE nriv-subobject OPTIONAL

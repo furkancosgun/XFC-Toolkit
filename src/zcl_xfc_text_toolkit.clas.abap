@@ -5,10 +5,7 @@ CLASS zcl_xfc_text_toolkit DEFINITION
   PUBLIC SECTION.
     TYPES tt_string_table TYPE STANDARD TABLE OF string WITH EMPTY KEY.
 
-    METHODS constructor
-      IMPORTING io_cache TYPE REF TO zcl_xfc_lru_cache_toolkit DEFAULT zcl_xfc_lru_cache_toolkit=>default.
-
-    METHODS read_text
+    CLASS-METHODS read_text
       IMPORTING iv_client        TYPE sy-mandt      DEFAULT sy-mandt
                 iv_id            TYPE thead-tdid
                 iv_language      TYPE thead-tdspras DEFAULT sy-langu
@@ -17,7 +14,7 @@ CLASS zcl_xfc_text_toolkit DEFINITION
       RETURNING VALUE(rv_result) TYPE string
       RAISING   zcx_xfc_toolkit_error.
 
-    METHODS save_text
+    CLASS-METHODS save_text
       IMPORTING iv_client        TYPE sy-mandt DEFAULT sy-mandt
                 iv_id            TYPE thead-tdid
                 iv_language      TYPE thead-tdspras DEFAULT sy-langu
@@ -27,48 +24,30 @@ CLASS zcl_xfc_text_toolkit DEFINITION
       RETURNING VALUE(rv_result) TYPE abap_bool
       RAISING   zcx_xfc_toolkit_error.
 
-    METHODS text_to_table
+    CLASS-METHODS text_to_table
       IMPORTING iv_text          TYPE string
                 iv_length        TYPE i
       RETURNING VALUE(rt_result) TYPE tt_string_table.
-
-  PRIVATE SECTION.
-    DATA cache TYPE REF TO zcl_xfc_lru_cache_toolkit.
-
 ENDCLASS.
 
 
 CLASS zcl_xfc_text_toolkit IMPLEMENTATION.
-  METHOD constructor.
-    cache = io_cache.
-  ENDMETHOD.
-
   METHOD read_text.
-    DATA lv_key   TYPE zcl_xfc_lru_cache_toolkit=>ty_key.
     DATA lt_lines TYPE STANDARD TABLE OF tline WITH DEFAULT KEY.
 
-    lv_key = |READ_TEXT:{ iv_client }:{ iv_id }:{ iv_language }:{ iv_name }:{ iv_object }|.
-
-    cache->get( EXPORTING  iv_key   = lv_key
-                IMPORTING  ev_value = lt_lines
-                EXCEPTIONS OTHERS   = 1 ).
+    CALL FUNCTION 'READ_TEXT'
+      EXPORTING
+        client   = iv_client
+        id       = iv_id
+        language = iv_language
+        name     = iv_name
+        object   = iv_object
+      TABLES
+        lines    = lt_lines
+      EXCEPTIONS
+        OTHERS   = 1.
     IF sy-subrc <> 0.
-      CALL FUNCTION 'READ_TEXT'
-        EXPORTING
-          client   = iv_client
-          id       = iv_id
-          language = iv_language
-          name     = iv_name
-          object   = iv_object
-        TABLES
-          lines    = lt_lines
-        EXCEPTIONS
-          OTHERS   = 1.
-      IF sy-subrc <> 0.
-        zcx_xfc_toolkit_error=>raise_syst( ).
-      ENDIF.
-      cache->put( iv_key   = lv_key
-                  iv_value = lt_lines ).
+      zcx_xfc_toolkit_error=>raise_syst( ).
     ENDIF.
 
     LOOP AT lt_lines ASSIGNING FIELD-SYMBOL(<fs_line>).
@@ -81,12 +60,9 @@ CLASS zcl_xfc_text_toolkit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD save_text.
-    DATA lv_key    TYPE zcl_xfc_lru_cache_toolkit=>ty_key.
     DATA ls_header TYPE thead.
     DATA lt_texts  TYPE tt_string_table.
     DATA lt_lines  TYPE STANDARD TABLE OF tline WITH DEFAULT KEY.
-
-    lv_key = |READ_TEXT:{ iv_client }:{ iv_id }:{ iv_language }:{ iv_name }:{ iv_object }|.
 
     ls_header-mandt    = iv_client.
     ls_header-tdid     = iv_id.
@@ -114,9 +90,6 @@ CLASS zcl_xfc_text_toolkit IMPLEMENTATION.
     IF sy-subrc <> 0.
       zcx_xfc_toolkit_error=>raise_syst( ).
     ENDIF.
-
-    cache->put( iv_key   = lv_key
-                iv_value = lt_lines ).
   ENDMETHOD.
 
   METHOD text_to_table.

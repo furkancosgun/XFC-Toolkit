@@ -1,4 +1,4 @@
-# XFC\_TOOLKIT - ABAP Utility Class Collection
+# XFC TOOLKIT - ABAP Utility Class Collection
 
 This repository contains a collection of reusable utility classes (`TOOLKIT`) designed to simplify and standardize common tasks in SAP ABAP projects. The goal is to reduce repetitive code, accelerate development, and maintain a consistent codebase.
 
@@ -26,6 +26,7 @@ This repository contains a collection of reusable utility classes (`TOOLKIT`) de
 | **ZCL\_XFC\_SYS\_TOOLKIT** | General system utilities, such as system information. |
 | **ZCL\_XFC\_TEXT\_TOOLKIT** | Tools for processing text objects. |
 | **ZCL\_XFC\_USER\_TOOLKIT** | Tools for managing user information and authorizations. |
+| **ZCL\_XFC\_TABLE\_TOOLKIT** | Tools for table operations. |
 
 *Note: The **ZCL\_XFC\_LRU\_LINKED\_LIST** and **ZCL\_XFC\_LRU\_NODE** classes are internal components of the LRU cache toolkit.*
 

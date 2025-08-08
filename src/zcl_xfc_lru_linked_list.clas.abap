@@ -3,7 +3,7 @@ CLASS zcl_xfc_lru_linked_list DEFINITION
   CREATE PRIVATE
   GLOBAL FRIENDS zcl_xfc_lru_cache_toolkit.
 
-  PUBLIC SECTION.
+  PRIVATE SECTION.
     METHODS prepend
       IMPORTING io_node TYPE REF TO zcl_xfc_lru_node.
 

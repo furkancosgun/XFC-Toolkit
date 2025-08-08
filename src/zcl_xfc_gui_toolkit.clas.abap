@@ -5,13 +5,13 @@ CLASS zcl_xfc_gui_toolkit DEFINITION
   PUBLIC SECTION.
     TYPES tt_fields TYPE STANDARD TABLE OF dynpread WITH DEFAULT KEY.
 
-    METHODS dynp_values_read
+    CLASS-METHODS dynp_values_read
       IMPORTING iv_prog   TYPE sy-repid
                 iv_dynp   TYPE sy-dynnr
       CHANGING  ct_fields TYPE tt_fields
       RAISING   zcx_xfc_toolkit_error.
 
-    METHODS dynp_values_update
+    CLASS-METHODS dynp_values_update
       IMPORTING iv_prog   TYPE sy-repid
                 iv_dynp   TYPE sy-dynnr
                 it_fields TYPE tt_fields
