@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_TABLE_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>XFC Table Toolkit</DESCRIPT>
+    <DESCRIPT>Table operations and utilities for internal tables.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

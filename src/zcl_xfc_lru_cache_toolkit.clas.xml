@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_LRU_CACHE_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Least Recently Used (LRU) cache tools.</DESCRIPT>
+    <DESCRIPT>LRU (Least Recently Used) cache mechanism for efficient memo</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

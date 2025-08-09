@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_GW_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>SAP Gateway (OData) services tools.</DESCRIPT>
+    <DESCRIPT>Utilities for SAP Gateway (OData) service operations.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

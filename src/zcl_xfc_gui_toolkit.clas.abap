@@ -16,6 +16,24 @@ CLASS zcl_xfc_gui_toolkit DEFINITION
                 iv_dynp   TYPE sy-dynnr
                 it_fields TYPE tt_fields
       RAISING   zcx_xfc_toolkit_error.
+
+    CLASS-METHODS icon_create
+      IMPORTING iv_icon          TYPE csequence
+                iv_text          TYPE csequence OPTIONAL
+                iv_quickinfo     TYPE csequence OPTIONAL
+                iv_add_qinfo     TYPE abap_bool DEFAULT abap_true
+      RETURNING VALUE(rv_result) TYPE icon_text
+      RAISING   zcx_xfc_toolkit_error.
+
+    CLASS-METHODS is_in_update_task
+      RETURNING VALUE(rv_result) TYPE abap_bool.
+
+    CLASS-METHODS is_gui_available
+      RETURNING VALUE(rv_result) TYPE abap_bool.
+
+    CLASS-METHODS is_html_client_running
+      RETURNING VALUE(rv_result) TYPE abap_bool.
+
 ENDCLASS.
 
 
@@ -47,5 +65,52 @@ CLASS zcl_xfc_gui_toolkit IMPLEMENTATION.
     IF sy-subrc <> 0.
       zcx_xfc_toolkit_error=>raise_syst( ).
     ENDIF.
+  ENDMETHOD.
+
+  METHOD is_in_update_task.
+    DATA lv_in_update_task TYPE sy-subrc.
+
+    CALL FUNCTION 'TH_IN_UPDATE_TASK'
+      IMPORTING
+        in_update_task = lv_in_update_task.
+
+    rv_result = xsdbool( lv_in_update_task = 1 ).
+  ENDMETHOD.
+
+  METHOD icon_create.
+    CALL FUNCTION 'ICON_CREATE'
+      EXPORTING
+        name       = iv_icon
+        text       = iv_text
+        info       = iv_quickinfo
+        add_stdinf = CONV icon_int( iv_add_qinfo )
+      IMPORTING
+        result     = rv_result
+      EXCEPTIONS
+        OTHERS     = 1.
+    IF sy-subrc <> 0.
+      zcx_xfc_toolkit_error=>raise_syst( ).
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD is_gui_available.
+    " sy-batch to check for background process
+    " sy-binpt to check for batch processing
+    " sy-oncom = 'P' to check for commit operation going on
+    " sy-oncom = 'X' to check for RFC call
+    IF    sy-batch  = abap_true
+       OR sy-binpt <> space
+       OR sy-oncom CA 'PX'
+       OR is_in_update_task( ).
+      RETURN.
+    ENDIF.
+
+    CALL FUNCTION 'GUI_IS_AVAILABLE'
+      IMPORTING
+        return = rv_result.
+  ENDMETHOD.
+
+  METHOD is_html_client_running.
+    rv_result = cl_gui_object=>www_active.
   ENDMETHOD.
 ENDCLASS.

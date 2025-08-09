@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_LOG_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Application logging and monitoring tools.</DESCRIPT>
+    <DESCRIPT>Logging and tracking of application messages and errors.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

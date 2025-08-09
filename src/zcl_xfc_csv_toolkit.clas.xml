@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_CSV_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>XFC CSV Toolkit</DESCRIPT>
+    <DESCRIPT>Tools for handling CSV file operations (read/write/parse).</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

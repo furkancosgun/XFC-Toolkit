@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_NR_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>SAP number range management tools.</DESCRIPT>
+    <DESCRIPT>Utilities for SAP number range object management.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

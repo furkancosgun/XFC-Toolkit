@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_LRU_LINKED_LIST</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>LRU cache linked list structure.</DESCRIPT>
+    <DESCRIPT>Internal linked list structure for LRU cache implementation.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

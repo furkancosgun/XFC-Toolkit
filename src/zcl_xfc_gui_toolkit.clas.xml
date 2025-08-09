@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_GUI_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>SAP GUI and screen (Dynpro) management tools.</DESCRIPT>
+    <DESCRIPT>Helper functions for SAP GUI screens and user interface oper</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

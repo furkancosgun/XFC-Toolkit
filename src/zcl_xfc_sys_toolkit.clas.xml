@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_SYS_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>General system and session info tools.</DESCRIPT>
+    <DESCRIPT>System helpers, such as retrieving system information.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

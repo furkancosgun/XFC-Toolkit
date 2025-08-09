@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCX_XFC_TOOLKIT_ERROR</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>XFC Toolkit Error</DESCRIPT>
+    <DESCRIPT>Custom exception class for error handling in the toolkit.</DESCRIPT>
     <CATEGORY>40</CATEGORY>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>

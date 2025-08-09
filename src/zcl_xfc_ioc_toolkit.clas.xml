@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_IOC_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Inversion of Control (IOC) tools.</DESCRIPT>
+    <DESCRIPT>Implements Inversion of Control (IOC) principles for flexibl</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_TSV_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>XFC TSV Toolkit</DESCRIPT>
+    <DESCRIPT>Utilities for handling TSV (Tab Separated Values) files.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

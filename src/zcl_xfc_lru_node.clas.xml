@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_LRU_NODE</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>LRU cache linked list node definition.</DESCRIPT>
+    <DESCRIPT>Node structure used in LRU cache linked list.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

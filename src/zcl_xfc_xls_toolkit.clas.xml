@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_XLS_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>XFC XLS Toolkit</DESCRIPT>
+    <DESCRIPT>Tools for working with XLS (Excel) files.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

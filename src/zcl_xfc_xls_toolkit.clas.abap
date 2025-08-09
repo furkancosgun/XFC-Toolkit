@@ -119,9 +119,9 @@ CLASS zcl_xfc_xls_toolkit IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      zcl_xfc_conv_toolkit=>convert_ext_2_int( EXPORTING iv_source    = <fs_source>
-                                                           io_elemdescr = lo_elemdescr
-                                                 IMPORTING ev_target    = <fs_target> ).
+      zcl_xfc_conv_toolkit=>convert_ext_to_int( EXPORTING iv_source    = <fs_source>
+                                                          io_elemdescr = lo_elemdescr
+                                                IMPORTING ev_target    = <fs_target> ).
     ENDLOOP.
   ENDMETHOD.
 ENDCLASS.

@@ -3,32 +3,34 @@ CLASS zcl_xfc_conv_toolkit DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    CLASS-METHODS convert_ext_2_int
+    CONSTANTS mc_default_encoding TYPE abap_encoding VALUE 'DEFAULT'.
+
+    CLASS-METHODS convert_ext_to_int
       IMPORTING VALUE(iv_source) TYPE any
                 io_elemdescr     TYPE REF TO cl_abap_elemdescr OPTIONAL
       EXPORTING ev_target        TYPE any.
 
-    CLASS-METHODS convert_int_2_ext
+    CLASS-METHODS convert_int_to_ext
       IMPORTING iv_source        TYPE any
       RETURNING VALUE(rv_result) TYPE string
       RAISING   zcx_xfc_toolkit_error.
 
-    CLASS-METHODS binary_2_xstring
+    CLASS-METHODS binary_to_xstring
       IMPORTING it_binary        TYPE STANDARD TABLE
       RETURNING VALUE(rv_result) TYPE xstring.
 
-    CLASS-METHODS xstring_2_binary
+    CLASS-METHODS xstring_to_binary
       IMPORTING iv_xstring TYPE xstring
       EXPORTING et_binary  TYPE STANDARD TABLE.
 
-    CLASS-METHODS xstring_2_string
+    CLASS-METHODS xstring_to_string
       IMPORTING iv_xstring       TYPE xstring
-                iv_encoding      TYPE abap_encoding DEFAULT 'DEFAULT'
+                iv_encoding      TYPE abap_encoding DEFAULT mc_default_encoding
       RETURNING VALUE(rv_result) TYPE string.
 
-    CLASS-METHODS string_2_xstring
+    CLASS-METHODS string_to_xstring
       IMPORTING iv_string        TYPE string
-                iv_encoding      TYPE abap_encoding DEFAULT 'DEFAULT'
+                iv_encoding      TYPE abap_encoding DEFAULT mc_default_encoding
       RETURNING VALUE(rv_result) TYPE string.
 
     CLASS-METHODS string_to_ftext
@@ -42,7 +44,7 @@ ENDCLASS.
 
 
 CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
-  METHOD convert_int_2_ext.
+  METHOD convert_int_to_ext.
     DATA lv_output TYPE c LENGTH 1024.
 
     WRITE iv_source TO lv_output LEFT-JUSTIFIED.
@@ -50,7 +52,7 @@ CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
     rv_result = lv_output.
   ENDMETHOD.
 
-  METHOD convert_ext_2_int.
+  METHOD convert_ext_to_int.
     DATA lo_elemdescr TYPE REF TO cl_abap_elemdescr.
     DATA lv_funcname  TYPE funcname.
 
@@ -109,7 +111,7 @@ CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD binary_2_xstring.
+  METHOD binary_to_xstring.
     FIELD-SYMBOLS <fs_binary> TYPE x.
 
     LOOP AT it_binary ASSIGNING FIELD-SYMBOL(<fs_line>).
@@ -121,7 +123,7 @@ CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD xstring_2_binary.
+  METHOD xstring_to_binary.
     DATA lv_len  TYPE i.
     DATA lv_pos  TYPE i.
     DATA lv_size TYPE i.
@@ -139,7 +141,7 @@ CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
     ENDWHILE.
   ENDMETHOD.
 
-  METHOD xstring_2_string.
+  METHOD xstring_to_string.
     DATA lo_converter TYPE REF TO cl_abap_conv_in_ce.
 
     TRY.
@@ -150,7 +152,7 @@ CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD string_2_xstring.
+  METHOD string_to_xstring.
     DATA lo_converter TYPE REF TO cl_abap_conv_out_ce.
 
     TRY.

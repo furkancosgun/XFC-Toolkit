@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_BDC_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>BDC transaction automation tools.</DESCRIPT>
+    <DESCRIPT>Utilities for Batch Data Communication (BDC) automation and</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

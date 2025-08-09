@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_FILE_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>File read/write/management tools.</DESCRIPT>
+    <DESCRIPT>File operations on the application server (read, write, mana</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

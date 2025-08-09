@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_USER_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>User info and authorization management tools.</DESCRIPT>
+    <DESCRIPT>User information and authorization utilities.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

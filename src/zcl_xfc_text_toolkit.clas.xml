@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_XFC_TEXT_TOOLKIT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Text processing tools.</DESCRIPT>
+    <DESCRIPT>Tools for processing and managing text objects.</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

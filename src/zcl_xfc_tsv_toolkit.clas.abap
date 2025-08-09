@@ -87,9 +87,9 @@ CLASS zcl_xfc_tsv_toolkit IMPLEMENTATION.
               CONTINUE.
             ENDIF.
 
-            zcl_xfc_conv_toolkit=>convert_ext_2_int( EXPORTING iv_source    = <fs_source>
-                                                               io_elemdescr = lo_elemdescr
-                                                     IMPORTING ev_target    = <fs_target> ).
+            zcl_xfc_conv_toolkit=>convert_ext_to_int( EXPORTING iv_source    = <fs_source>
+                                                                io_elemdescr = lo_elemdescr
+                                                      IMPORTING ev_target    = <fs_target> ).
           ENDLOOP.
         ENDLOOP.
 
@@ -141,9 +141,9 @@ CLASS zcl_xfc_tsv_toolkit IMPLEMENTATION.
       ENDIF.
 
       IF rv_result IS INITIAL.
-        rv_result = zcl_xfc_conv_toolkit=>convert_int_2_ext( iv_source = <fs_data> ).
+        rv_result = zcl_xfc_conv_toolkit=>convert_int_to_ext( iv_source = <fs_data> ).
       ELSE.
-        rv_result = |{ rv_result }{ cl_abap_char_utilities=>horizontal_tab }{ zcl_xfc_conv_toolkit=>convert_int_2_ext(
+        rv_result = |{ rv_result }{ cl_abap_char_utilities=>horizontal_tab }{ zcl_xfc_conv_toolkit=>convert_int_to_ext(
                                                                                   <fs_data> ) }|.
       ENDIF.
     ENDLOOP.
