@@ -3,8 +3,6 @@ CLASS zcl_xfc_text_toolkit DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    TYPES tt_string_table TYPE STANDARD TABLE OF string WITH EMPTY KEY.
-
     CLASS-METHODS read_text
       IMPORTING iv_client        TYPE sy-mandt      DEFAULT sy-mandt
                 iv_id            TYPE thead-tdid
@@ -24,10 +22,6 @@ CLASS zcl_xfc_text_toolkit DEFINITION
       RETURNING VALUE(rv_result) TYPE abap_bool
       RAISING   zcx_xfc_toolkit_error.
 
-    CLASS-METHODS text_to_table
-      IMPORTING iv_text          TYPE string
-                iv_length        TYPE i
-      RETURNING VALUE(rt_result) TYPE tt_string_table.
 ENDCLASS.
 
 
@@ -51,7 +45,7 @@ CLASS zcl_xfc_text_toolkit IMPLEMENTATION.
     ENDIF.
 
     LOOP AT lt_lines ASSIGNING FIELD-SYMBOL(<fs_line>).
-      IF sy-tabix = 0.
+      IF sy-tabix = 1.
         rv_result = <fs_line>-tdline.
       ELSE.
         rv_result = |{ rv_result } { <fs_line>-tdline }|.
@@ -61,7 +55,7 @@ CLASS zcl_xfc_text_toolkit IMPLEMENTATION.
 
   METHOD save_text.
     DATA ls_header TYPE thead.
-    DATA lt_texts  TYPE tt_string_table.
+    DATA lt_texts  TYPE TABLE OF tline-tdline WITH EMPTY KEY.
     DATA lt_lines  TYPE STANDARD TABLE OF tline WITH DEFAULT KEY.
 
     ls_header-mandt    = iv_client.
@@ -70,18 +64,18 @@ CLASS zcl_xfc_text_toolkit IMPLEMENTATION.
     ls_header-tdobject = iv_object.
     ls_header-tdspras  = iv_language.
 
-    lt_texts = text_to_table( iv_text   = iv_text
-                              iv_length = 132 ).
+    zcl_xfc_conv_toolkit=>string_to_ftext( EXPORTING iv_string = iv_text
+                                           IMPORTING et_ftext  = lt_texts ).
 
     LOOP AT lt_texts ASSIGNING FIELD-SYMBOL(<fs_text>).
-      APPEND VALUE #( tdline = <fs_text> ) TO lt_lines.
+      APPEND VALUE #( tdformat = '*'
+                      tdline   = <fs_text> ) TO lt_lines.
     ENDLOOP.
 
     CALL FUNCTION 'SAVE_TEXT'
       EXPORTING
         client          = iv_client
         header          = ls_header
-        insert          = abap_true
         savemode_direct = abap_true
       TABLES
         lines           = lt_lines
@@ -90,28 +84,7 @@ CLASS zcl_xfc_text_toolkit IMPLEMENTATION.
     IF sy-subrc <> 0.
       zcx_xfc_toolkit_error=>raise_syst( ).
     ENDIF.
-  ENDMETHOD.
 
-  METHOD text_to_table.
-    DATA lv_off TYPE i.
-    DATA lv_len TYPE i.
-    DATA lv_pos TYPE i.
-
-    lv_off = 0.
-    lv_len = strlen( iv_text ).
-    WHILE lv_off < lv_len.
-      lv_pos = lv_len - lv_off.
-      IF lv_pos > iv_length.
-        APPEND substring( val = iv_text
-                          off = lv_off
-                          len = lv_len ) TO rt_result.
-        lv_off = lv_off + iv_length.
-      ELSE.
-        APPEND substring( val = iv_text
-                          off = lv_off
-                          len = lv_pos ) TO rt_result.
-        lv_off = lv_off + lv_pos.
-      ENDIF.
-    ENDWHILE.
+    rv_result = abap_true.
   ENDMETHOD.
 ENDCLASS.

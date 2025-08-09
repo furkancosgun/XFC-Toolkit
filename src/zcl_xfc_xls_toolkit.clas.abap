@@ -4,12 +4,12 @@ CLASS zcl_xfc_xls_toolkit DEFINITION
 
   PUBLIC SECTION.
     CLASS-METHODS export
-      IMPORTING VALUE(it_data)   TYPE STANDARD TABLE
-      RETURNING VALUE(rv_result) TYPE xstring
+      IMPORTING VALUE(it_data) TYPE STANDARD TABLE
+      EXPORTING ev_xdata       TYPE xstring
       RAISING   zcx_xfc_toolkit_error.
 
     CLASS-METHODS import
-      IMPORTING iv_xdocument   TYPE xstring
+      IMPORTING iv_xdata       TYPE xstring
       EXPORTING VALUE(et_data) TYPE STANDARD TABLE
       RAISING   zcx_xfc_toolkit_error.
 
@@ -56,7 +56,7 @@ CLASS zcl_xfc_xls_toolkit IMPLEMENTATION.
                                         display_type = if_salv_export_column_conf=>display_types-text_view ).
         ENDLOOP.
 
-        lo_exporter->read_result( IMPORTING content = rv_result ).
+        lo_exporter->read_result( IMPORTING content = ev_xdata ).
       CATCH cx_root INTO DATA(lx_root).
         zcx_xfc_toolkit_error=>raise( lx_root->get_text( ) ).
     ENDTRY.
@@ -73,7 +73,7 @@ CLASS zcl_xfc_xls_toolkit IMPLEMENTATION.
         lo_structdescr = get_structdescr( et_data ).
 
         lo_spreadsheet = NEW cl_fdt_xl_spreadsheet( document_name = ''
-                                                    xdocument     = iv_xdocument ).
+                                                    xdocument     = iv_xdata ).
 
         lo_spreadsheet->get_worksheet_names( IMPORTING worksheet_names = lt_worksheet ).
         lr_data = lo_spreadsheet->get_itab_from_worksheet( worksheet_name = VALUE #( lt_worksheet[ 1 ] OPTIONAL ) ).
@@ -99,7 +99,6 @@ CLASS zcl_xfc_xls_toolkit IMPLEMENTATION.
   METHOD convert_structure.
     DATA lo_datadescr TYPE REF TO cl_abap_datadescr.
     DATA lo_elemdescr TYPE REF TO cl_abap_elemdescr.
-    DATA lv_funcname  TYPE funcname.
     DATA lv_position  TYPE sy-tabix.
 
     LOOP AT io_structdescr->components ASSIGNING FIELD-SYMBOL(<fs_component>).
@@ -120,51 +119,9 @@ CLASS zcl_xfc_xls_toolkit IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      CASE lo_datadescr->type_kind.
-        WHEN cl_abap_typedescr=>typekind_packed
-          OR cl_abap_typedescr=>typekind_decfloat
-          OR cl_abap_typedescr=>typekind_decfloat16
-          OR cl_abap_typedescr=>typekind_decfloat34.
-          TRY.
-              <fs_target> = <fs_source>.
-            CATCH cx_root.
-              IF <fs_source> CA ',.'.
-                REPLACE ALL OCCURRENCES OF '.' IN <fs_source> WITH ''.
-                REPLACE ALL OCCURRENCES OF ',' IN <fs_source> WITH '.'.
-              ENDIF.
-              <fs_target> = <fs_source>.
-          ENDTRY.
-        WHEN cl_abap_typedescr=>typekind_date.
-          IF <fs_source> CA '-'.
-            REPLACE ALL OCCURRENCES OF '-' IN <fs_source> WITH ''.
-          ENDIF.
-          CONDENSE <fs_source> NO-GAPS.
-          <fs_target> = <fs_source>.
-        WHEN cl_abap_typedescr=>typekind_time.
-          IF <fs_source> CA ':'.
-            REPLACE ALL OCCURRENCES OF ':' IN <fs_source> WITH ''.
-          ENDIF.
-          CONDENSE <fs_source> NO-GAPS.
-          <fs_target> = <fs_source>.
-        WHEN OTHERS.
-          TRY.
-              lv_funcname = lo_elemdescr->edit_mask.
-              IF lv_funcname IS NOT INITIAL.
-                REPLACE '==' IN lv_funcname WITH ''.
-                CONDENSE lv_funcname NO-GAPS.
-                lv_funcname = |CONVERSION_EXIT_{ lv_funcname }_INPUT|.
-                CALL FUNCTION lv_funcname
-                  EXPORTING
-                    input  = <fs_source>
-                  IMPORTING
-                    output = <fs_target>.
-              ELSE.
-                <fs_target> = <fs_source>.
-              ENDIF.
-            CATCH cx_sy_move_cast_error.
-              <fs_target> = <fs_source>.
-          ENDTRY.
-      ENDCASE.
+      zcl_xfc_conv_toolkit=>convert_ext_2_int( EXPORTING iv_source    = <fs_source>
+                                                           io_elemdescr = lo_elemdescr
+                                                 IMPORTING ev_target    = <fs_target> ).
     ENDLOOP.
   ENDMETHOD.
 ENDCLASS.
