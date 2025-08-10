@@ -16,7 +16,6 @@ This repository contains a collection of reusable utility classes (`TOOLKIT`) de
 | :--- | :--- |
 | **ZCL_XFC_BDC_TOOLKIT** | Utilities for Batch Data Communication (BDC) automation and management. |
 | **ZCL_XFC_CONV_TOOLKIT** | Conversion helpers, likely for data type and format conversions. |
-| **ZCL_XFC_CSV_TOOLKIT** | Tools for handling CSV file operations (read/write/parse). |
 | **ZCL_XFC_FILE_TOOLKIT** | File operations on the application server (read, write, manage files). |
 | **ZCL_XFC_GUI_TOOLKIT** | Helper functions for SAP GUI screens and user interface operations. |
 | **ZCL_XFC_GW_TOOLKIT** | Utilities for SAP Gateway (OData) service operations. |
@@ -29,10 +28,8 @@ This repository contains a collection of reusable utility classes (`TOOLKIT`) de
 | **ZCL_XFC_SYS_TOOLKIT** | System helpers, such as retrieving system information. |
 | **ZCL_XFC_TABLE_TOOLKIT** | Table operations and utilities for internal tables. |
 | **ZCL_XFC_TEXT_TOOLKIT** | Tools for processing and managing text objects. |
-| **ZCL_XFC_TSV_TOOLKIT** | Utilities for handling TSV (Tab Separated Values) files. |
 | **ZCL_XFC_UNIT_OF_WORK_TOOLKIT** | Implements the Unit of Work pattern for transactional operations. |
 | **ZCL_XFC_USER_TOOLKIT** | User information and authorization utilities. |
-| **ZCL_XFC_XLS_TOOLKIT** | Tools for working with XLS (Excel) files. |
 | **ZCX_XFC_TOOLKIT_ERROR** | Custom exception class for error handling in the toolkit. |
 
 *Note: The **ZCL\_XFC\_LRU\_LINKED\_LIST** and **ZCL\_XFC\_LRU\_NODE** classes are internal components of the LRU cache toolkit.*

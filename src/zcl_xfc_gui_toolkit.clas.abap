@@ -25,9 +25,6 @@ CLASS zcl_xfc_gui_toolkit DEFINITION
       RETURNING VALUE(rv_result) TYPE icon_text
       RAISING   zcx_xfc_toolkit_error.
 
-    CLASS-METHODS is_in_update_task
-      RETURNING VALUE(rv_result) TYPE abap_bool.
-
     CLASS-METHODS is_gui_available
       RETURNING VALUE(rv_result) TYPE abap_bool.
 
@@ -67,16 +64,6 @@ CLASS zcl_xfc_gui_toolkit IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-  METHOD is_in_update_task.
-    DATA lv_in_update_task TYPE sy-subrc.
-
-    CALL FUNCTION 'TH_IN_UPDATE_TASK'
-      IMPORTING
-        in_update_task = lv_in_update_task.
-
-    rv_result = xsdbool( lv_in_update_task = 1 ).
-  ENDMETHOD.
-
   METHOD icon_create.
     CALL FUNCTION 'ICON_CREATE'
       EXPORTING
@@ -100,8 +87,7 @@ CLASS zcl_xfc_gui_toolkit IMPLEMENTATION.
     " sy-oncom = 'X' to check for RFC call
     IF    sy-batch  = abap_true
        OR sy-binpt <> space
-       OR sy-oncom CA 'PX'
-       OR is_in_update_task( ).
+       OR sy-oncom CA 'PX'.
       RETURN.
     ENDIF.
 

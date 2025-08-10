@@ -28,6 +28,18 @@ CLASS zcl_xfc_gw_toolkit DEFINITION
                 iv_service_key TYPE /iwfnd/s_v4_med_service_key
       RAISING   zcx_xfc_toolkit_error.
 
+    CLASS-METHODS paging
+      IMPORTING is_paging TYPE /iwbep/s_mgw_paging
+      CHANGING  ct_data   TYPE STANDARD TABLE.
+
+    CLASS-METHODS filtering
+      IMPORTING it_select_options TYPE /iwbep/t_mgw_select_option
+      CHANGING  ct_data           TYPE STANDARD TABLE.
+
+    CLASS-METHODS orderby
+      IMPORTING it_order TYPE /iwbep/t_mgw_sorting_order
+      CHANGING  ct_data  TYPE STANDARD TABLE.
+
   PRIVATE SECTION.
     CLASS-METHODS check_tadir
       IMPORTING iv_pgmid         TYPE clike DEFAULT 'R3TR'
@@ -38,19 +50,20 @@ ENDCLASS.
 
 
 CLASS zcl_xfc_gw_toolkit IMPLEMENTATION.
-  METHOD invalidate_client_caches.
-    CONSTANTS lc_prog TYPE tadir-obj_name VALUE '/UI2/INVALIDATE_CLIENT_CACHES'.
+  METHOD app_index_calculate.
+    CONSTANTS lc_prog TYPE tadir-obj_name VALUE '/UI5/APP_INDEX_CALCULATE'.
 
     IF NOT check_tadir( lc_prog ).
       zcx_xfc_toolkit_error=>raise( |Program '{ lc_prog }' does not exist.| ).
     ENDIF.
 
-    IF iv_uname IS INITIAL.
-      SUBMIT (lc_prog) WITH gv_all = abap_true AND RETURN.
+    IF iv_repository IS INITIAL.
+      SUBMIT (lc_prog) WITH p_all_a = abap_true
+             WITH p_all_d = abap_false AND RETURN.
     ELSE.
-      SUBMIT (lc_prog) WITH gv_all = abap_false
-             WITH gv_user = abap_true
-             WITH g_uname = iv_uname AND RETURN.
+      SUBMIT (lc_prog) WITH p_all = abap_false
+             WITH p_distl = abap_false
+             WITH p_repo  = iv_repository AND RETURN.
     ENDIF.
   ENDMETHOD.
 
@@ -60,17 +73,6 @@ CLASS zcl_xfc_gw_toolkit IMPLEMENTATION.
         AND object   = iv_object
         AND obj_name = iv_obj_name.
     rv_result = xsdbool( sy-subrc = 0 ).
-  ENDMETHOD.
-
-  METHOD invalidate_global_caches.
-    CONSTANTS lc_prog TYPE tadir-obj_name VALUE '/UI2/INVALIDATE_GLOBAL_CACHES'.
-
-    IF NOT check_tadir( lc_prog ).
-      zcx_xfc_toolkit_error=>raise( |Program '{ lc_prog }' does not exist.| ).
-    ENDIF.
-
-    SUBMIT (lc_prog) WITH gv_test = abap_false
-           WITH gv_exe = abap_true AND RETURN.
   ENDMETHOD.
 
   METHOD cleanup_metadata_cache.
@@ -95,21 +97,18 @@ CLASS zcl_xfc_gw_toolkit IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD app_index_calculate.
-    CONSTANTS lc_prog TYPE tadir-obj_name VALUE '/UI5/APP_INDEX_CALCULATE'.
-
-    IF NOT check_tadir( lc_prog ).
-      zcx_xfc_toolkit_error=>raise( |Program '{ lc_prog }' does not exist.| ).
+  METHOD clear_metadata_cache.
+    /iwfnd/cl_v2_v4_config_facade=>clear_metadata_cache( EXPORTING iv_group_id    = iv_group_id
+                                                                   is_service_key = iv_service_key
+                                                         IMPORTING ev_error_text  = DATA(lv_error_text) ).
+    IF lv_error_text IS NOT INITIAL.
+      zcx_xfc_toolkit_error=>raise( lv_error_text ).
     ENDIF.
+  ENDMETHOD.
 
-    IF iv_repository IS INITIAL.
-      SUBMIT (lc_prog) WITH p_all_a = abap_true
-             WITH p_all_d = abap_false AND RETURN.
-    ELSE.
-      SUBMIT (lc_prog) WITH p_all = abap_false
-             WITH p_distl = abap_false
-             WITH p_repo  = iv_repository AND RETURN.
-    ENDIF.
+  METHOD filtering.
+    /iwbep/cl_mgw_data_util=>filtering( EXPORTING it_select_options = it_select_options
+                                        CHANGING  ct_data           = ct_data ).
   ENDMETHOD.
 
   METHOD invalidate_backend_contexts.
@@ -124,12 +123,40 @@ CLASS zcl_xfc_gw_toolkit IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD clear_metadata_cache.
-    /iwfnd/cl_v2_v4_config_facade=>clear_metadata_cache( EXPORTING iv_group_id    = iv_group_id
-                                                                   is_service_key = iv_service_key
-                                                         IMPORTING ev_error_text  = DATA(lv_error_text) ).
-    IF lv_error_text IS NOT INITIAL.
-      zcx_xfc_toolkit_error=>raise( lv_error_text ).
+  METHOD invalidate_client_caches.
+    CONSTANTS lc_prog TYPE tadir-obj_name VALUE '/UI2/INVALIDATE_CLIENT_CACHES'.
+
+    IF NOT check_tadir( lc_prog ).
+      zcx_xfc_toolkit_error=>raise( |Program '{ lc_prog }' does not exist.| ).
     ENDIF.
+
+    IF iv_uname IS INITIAL.
+      SUBMIT (lc_prog) WITH gv_all = abap_true AND RETURN.
+    ELSE.
+      SUBMIT (lc_prog) WITH gv_all = abap_false
+             WITH gv_user = abap_true
+             WITH g_uname = iv_uname AND RETURN.
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD invalidate_global_caches.
+    CONSTANTS lc_prog TYPE tadir-obj_name VALUE '/UI2/INVALIDATE_GLOBAL_CACHES'.
+
+    IF NOT check_tadir( lc_prog ).
+      zcx_xfc_toolkit_error=>raise( |Program '{ lc_prog }' does not exist.| ).
+    ENDIF.
+
+    SUBMIT (lc_prog) WITH gv_test = abap_false
+           WITH gv_exe = abap_true AND RETURN.
+  ENDMETHOD.
+
+  METHOD orderby.
+    /iwbep/cl_mgw_data_util=>orderby( EXPORTING it_order = it_order
+                                      CHANGING  ct_data  = ct_data ).
+  ENDMETHOD.
+
+  METHOD paging.
+    /iwbep/cl_mgw_data_util=>paging( EXPORTING is_paging = is_paging
+                                     CHANGING  ct_data   = ct_data ).
   ENDMETHOD.
 ENDCLASS.

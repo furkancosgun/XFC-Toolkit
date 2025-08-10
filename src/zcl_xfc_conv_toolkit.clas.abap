@@ -8,10 +8,12 @@ CLASS zcl_xfc_conv_toolkit DEFINITION
     CLASS-METHODS convert_ext_to_int
       IMPORTING VALUE(iv_source) TYPE any
                 io_elemdescr     TYPE REF TO cl_abap_elemdescr OPTIONAL
-      EXPORTING ev_target        TYPE any.
+      EXPORTING ev_target        TYPE any
+      RAISING   zcx_xfc_toolkit_error.
 
     CLASS-METHODS convert_int_to_ext
       IMPORTING iv_source        TYPE any
+                io_elemdescr     TYPE REF TO cl_abap_elemdescr OPTIONAL
       RETURNING VALUE(rv_result) TYPE string
       RAISING   zcx_xfc_toolkit_error.
 
@@ -45,11 +47,28 @@ ENDCLASS.
 
 CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
   METHOD convert_int_to_ext.
-    DATA lv_output TYPE c LENGTH 1024.
+    DATA lo_elemdescr TYPE REF TO cl_abap_elemdescr.
+    DATA lv_output    TYPE c LENGTH 1024.
 
-    WRITE iv_source TO lv_output LEFT-JUSTIFIED.
+    CHECK iv_source IS NOT INITIAL.
 
-    rv_result = lv_output.
+    IF io_elemdescr IS BOUND.
+      lo_elemdescr = io_elemdescr.
+    ELSE.
+      lo_elemdescr ?= cl_abap_typedescr=>describe_by_data( iv_source ).
+    ENDIF.
+
+    TRY.
+        IF    lo_elemdescr->type_kind = cl_abap_typedescr=>typekind_string
+           OR lo_elemdescr->length    > 1024.
+          rv_result = iv_source.
+        ELSE.
+          WRITE iv_source TO lv_output LEFT-JUSTIFIED.
+          rv_result = lv_output.
+        ENDIF.
+      CATCH cx_root INTO DATA(lx_root).
+        zcx_xfc_toolkit_error=>raise( |Conversion error:{ lx_root->get_text( ) }| ).
+    ENDTRY.
   ENDMETHOD.
 
   METHOD convert_ext_to_int.
@@ -100,8 +119,10 @@ CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
               CONDENSE lv_funcname NO-GAPS.
               lv_funcname = |CONVERSION_EXIT_{ lv_funcname }_INPUT|.
               CALL FUNCTION lv_funcname
-                EXPORTING input  = iv_source
-                IMPORTING output = ev_target.
+                EXPORTING
+                  input  = iv_source
+                IMPORTING
+                  output = ev_target.
             ELSE.
               ev_target = iv_source.
             ENDIF.
