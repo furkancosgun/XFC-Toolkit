@@ -30,6 +30,7 @@ This repository contains a collection of reusable utility classes (`TOOLKIT`) de
 | **ZCL_XFC_TEXT_TOOLKIT** | Tools for processing and managing text objects. |
 | **ZCL_XFC_UNIT_OF_WORK_TOOLKIT** | Implements the Unit of Work pattern for transactional operations. |
 | **ZCL_XFC_USER_TOOLKIT** | User information and authorization utilities. |
+| **ZCL_XFC_FTP_TOOLKIT** | Tools for FTP (File Transfer Protocol) operations. |
 | **ZCX_XFC_TOOLKIT_ERROR** | Custom exception class for error handling in the toolkit. |
 
 *Note: The **ZCL\_XFC\_LRU\_LINKED\_LIST** and **ZCL\_XFC\_LRU\_NODE** classes are internal components of the LRU cache toolkit.*

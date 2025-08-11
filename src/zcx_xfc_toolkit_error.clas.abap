@@ -37,10 +37,6 @@ CLASS zcx_xfc_toolkit_error DEFINITION
     CLASS-METHODS raise_syst
       RAISING zcx_xfc_toolkit_error.
 
-    CLASS-METHODS raise_bapiret2
-      IMPORTING is_return TYPE bapiret2
-      RAISING   zcx_xfc_toolkit_error.
-
   PROTECTED SECTION.
 
   PRIVATE SECTION.
@@ -68,15 +64,16 @@ CLASS zcx_xfc_toolkit_error IMPLEMENTATION.
     lv_message = iv_message.
 
     RAISE EXCEPTION TYPE zcx_xfc_toolkit_error
-      EXPORTING textid = zcx_xfc_toolkit_error=>mc_general_error
-                msgv1  = lv_message(50)
-                msgv2  = lv_message+50(50)
-                msgv3  = lv_message+100(50)
-                msgv4  = lv_message+150(50).
+      EXPORTING
+        textid = zcx_xfc_toolkit_error=>mc_general_error
+        msgv1  = lv_message(50)
+        msgv2  = lv_message+50(50)
+        msgv3  = lv_message+100(50)
+        msgv4  = lv_message+150(50).
   ENDMETHOD.
 
   METHOD raise_syst.
-    DATA lv_message TYPE string ##NEEDED.
+    DATA lv_message TYPE char200.
 
     MESSAGE ID sy-msgid
             TYPE sy-msgty
@@ -87,21 +84,12 @@ CLASS zcx_xfc_toolkit_error IMPLEMENTATION.
                  sy-msgv3
                  sy-msgv4.
 
-    raise( lv_message ).
-  ENDMETHOD.
-
-  METHOD raise_bapiret2.
-    DATA lv_message TYPE string ##NEEDED.
-
-    MESSAGE ID is_return-id
-            TYPE is_return-type
-            NUMBER is_return-number
-            INTO lv_message
-            WITH is_return-message_v1
-                 is_return-message_v2
-                 is_return-message_v3
-                 is_return-message_v4.
-
-    raise( lv_message ).
+    RAISE EXCEPTION TYPE zcx_xfc_toolkit_error
+      EXPORTING
+        textid = zcx_xfc_toolkit_error=>mc_general_error
+        msgv1  = lv_message(50)
+        msgv2  = lv_message+50(50)
+        msgv3  = lv_message+100(50)
+        msgv4  = lv_message+150(50).
   ENDMETHOD.
 ENDCLASS.
