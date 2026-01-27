@@ -42,6 +42,14 @@ CLASS zcl_xfc_conv_toolkit DEFINITION
     CLASS-METHODS ftext_to_string
       IMPORTING it_ftext         TYPE STANDARD TABLE
       RETURNING VALUE(rv_result) TYPE string.
+
+    CLASS-METHODS soli_to_solix
+      IMPORTING it_soli         TYPE soli_tab
+      RETURNING VALUE(rt_solix) TYPE solix_tab.
+
+    CLASS-METHODS solix_to_soli
+      IMPORTING it_solix       TYPE solix_tab
+      RETURNING VALUE(rt_soli) TYPE soli_tab.
 ENDCLASS.
 
 
@@ -119,10 +127,8 @@ CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
               CONDENSE lv_funcname NO-GAPS.
               lv_funcname = |CONVERSION_EXIT_{ lv_funcname }_INPUT|.
               CALL FUNCTION lv_funcname
-                EXPORTING
-                  input  = iv_source
-                IMPORTING
-                  output = ev_target.
+                EXPORTING input  = iv_source
+                IMPORTING output = ev_target.
             ELSE.
               ev_target = iv_source.
             ENDIF.
@@ -145,8 +151,8 @@ CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD xstring_to_binary.
-    DATA lv_len  TYPE i.
     DATA lv_pos  TYPE i.
+    DATA lv_len  TYPE i.
     DATA lv_size TYPE i.
 
     lv_pos = 0.
@@ -186,8 +192,8 @@ CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD string_to_ftext.
-    DATA lv_len  TYPE i.
     DATA lv_pos  TYPE i.
+    DATA lv_len  TYPE i.
     DATA lv_size TYPE i.
 
     lv_pos = 0.
@@ -212,6 +218,26 @@ CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
         ASSIGN COMPONENT 0 OF STRUCTURE <fs_line> TO <fs_ftext>.
       ENDIF.
       CONCATENATE rv_result <fs_ftext> INTO rv_result RESPECTING BLANKS.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD soli_to_solix.
+    FIELD-SYMBOLS <fs_solix> LIKE LINE OF rt_solix.
+
+    LOOP AT it_soli ASSIGNING <fs_solix> CASTING.
+      APPEND <fs_solix> TO rt_solix.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD solix_to_soli.
+    DATA ls_soli  LIKE LINE OF rt_soli.
+    DATA ls_solix LIKE LINE OF it_solix.
+    FIELD-SYMBOLS <fs_solix> LIKE LINE OF it_solix.
+
+    LOOP AT it_solix INTO ls_solix.
+      ASSIGN ls_soli TO <fs_solix> CASTING.
+      <fs_solix> = ls_solix.
+      APPEND ls_soli TO rt_soli.
     ENDLOOP.
   ENDMETHOD.
 ENDCLASS.
