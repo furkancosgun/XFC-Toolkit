@@ -47,9 +47,17 @@ CLASS zcl_xfc_conv_toolkit DEFINITION
       IMPORTING it_soli         TYPE soli_tab
       RETURNING VALUE(rt_solix) TYPE solix_tab.
 
+    CLASS-METHODS soli_to_string
+      IMPORTING it_soli          TYPE soli_tab
+      RETURNING VALUE(rv_string) TYPE string.
+
     CLASS-METHODS solix_to_soli
       IMPORTING it_solix       TYPE solix_tab
       RETURNING VALUE(rt_soli) TYPE soli_tab.
+
+    CLASS-METHODS solix_to_xstring
+      IMPORTING it_solix          TYPE solix_tab
+      RETURNING VALUE(rv_xstring) TYPE xstring.
 ENDCLASS.
 
 
@@ -238,6 +246,22 @@ CLASS zcl_xfc_conv_toolkit IMPLEMENTATION.
       ASSIGN ls_soli TO <fs_solix> CASTING.
       <fs_solix> = ls_solix.
       APPEND ls_soli TO rt_soli.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD solix_to_xstring.
+    LOOP AT it_solix ASSIGNING FIELD-SYMBOL(<fs_solix>).
+      CONCATENATE rv_xstring <fs_solix>-line INTO rv_xstring IN BYTE MODE.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD soli_to_string.
+    LOOP AT it_soli ASSIGNING FIELD-SYMBOL(<fs_soli>).
+      IF sy-tabix = 1.
+        rv_string = <fs_soli>-line.
+      ELSE.
+        CONCATENATE rv_string <fs_soli>-line INTO rv_string SEPARATED BY space.
+      ENDIF.
     ENDLOOP.
   ENDMETHOD.
 ENDCLASS.
